@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,6 +37,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -72,44 +74,89 @@ class MainActivity : ComponentActivity() {
                     composable<ProfileScreen> {
                         ProfileScreen(navController)
                     }
+                    composable<SearchScreen> {
+                        SearchScreen(navController)
+                    }
                 }
             }
         }
     }
 }
 
+//Каждый экран приложения для навигации
 @Serializable
 object HomeScreen
-
+@Serializable
+object SearchScreen
 @Serializable
 object ProfileScreen
 
+//Это для API
 data class ProfileModel(
     var age: String,
     var name: String,
     var email: String,
 )
-
 data class UserModel(
     var profile: ProfileModel
 )
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
-    NavigationBar {
+    NavigationBar(modifier = Modifier.clip(shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))) {
         NavigationBarItem(
             selected = true,
-            onClick = {navController.navigate(HomeScreen)},
-            icon = {Icon(imageVector = Icons.Default.Home, contentDescription = null)},
+            onClick = { navController.navigate(HomeScreen) },
+            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) },
             label = {Text(text = "Home")})
-
+        NavigationBarItem(
+            selected = false,
+            onClick = { navController.navigate(SearchScreen) },
+            icon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
+            label = {Text(text = "Search")})
         NavigationBarItem(
             selected = false,
             onClick = { navController.navigate(ProfileScreen) },
-            icon = { Icon(imageVector = Icons.Default.Person, contentDescription = null)},
+            icon = { Icon(imageVector = Icons.Default.Person, contentDescription = null) },
             label = {Text(text = "Profile")})
     }
 }
+
+//@Composable
+//fun BottomNavigationBar(navController: NavController) {
+//    // Состояние для хранения индекса выбранного элемента
+//    val selectedIndex = remember { mutableIntStateOf(0) }
+//
+//    NavigationBar(modifier = Modifier.clip(shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))) {
+//        NavigationBarItem(
+//            selected = selectedIndex.intValue == 0,
+//            onClick = {
+//                navController.navigate(HomeScreen)
+//                selectedIndex.intValue = 0
+//                },
+//            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) },
+//            label = { Text(text = "Home") }
+//        )
+//        NavigationBarItem(
+//            selected = selectedIndex.intValue == 1,
+//            onClick = {
+//                navController.navigate(SearchScreen)
+//                selectedIndex.intValue = 1
+//            },
+//            icon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
+//            label = { Text(text = "Search") }
+//        )
+//        NavigationBarItem(
+//            selected = selectedIndex.intValue == 2,
+//            onClick = {
+//                navController.navigate(ProfileScreen)
+//                selectedIndex.intValue = 2
+//            },
+//            icon = { Icon(imageVector = Icons.Default.Person, contentDescription = null) },
+//            label = { Text(text = "Profile") }
+//        )
+//    }
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -131,12 +178,11 @@ fun HomeScreen(navController: NavController) {
         },
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(innerPadding),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+
             val id = remember {
                 mutableStateOf(TextFieldValue())
             }
@@ -149,33 +195,39 @@ fun HomeScreen(navController: NavController) {
                     )
                 )
             }
-
             TextField(
                 shape = RoundedCornerShape(50.dp),
                 label = { Text(text = "User ID") },
                 value = id.value,
-                onValueChange = { id.value = it }
+                onValueChange = { id.value = it },
+                singleLine = true
             )
-
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Button(
-                    modifier = Modifier.padding(8.dp),
-                    onClick = {
-                        sendRequest(
-                            id = id.value.text,
-                            profileState = profile
-                        )
-
-                        Log.d("Main Activity", profile.toString())
-                    }
-                ) {
-                    Text(text = "Get Data", fontSize = 22.sp)
+            Button(
+                modifier = Modifier.padding(8.dp),
+                onClick = {
+                    sendRequest(
+                        id = id.value.text,
+                        profileState = profile
+                    )
+                    Log.d("Main Activity", profile.toString())
                 }
-                Text(text = profile.component1().toString(), fontSize = 22.sp)
+            ) {
+                Text(text = "Get Data", fontSize = 22.sp)
             }
+            Text(
+                text = profile.component1().toString(),
+                fontSize = 22.sp)
+        }
+    }
+}
+
+@Composable
+fun SearchScreen(navController: NavController) {
+    Scaffold(
+        bottomBar = { BottomNavigationBar(navController) }
+    ) { innerPadding ->
+        Surface(modifier = Modifier.padding(innerPadding)) {
+
         }
     }
 }
@@ -185,13 +237,15 @@ fun ProfileScreen(navController: NavController) {
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
-        Surface(modifier = Modifier.padding(innerPadding), shape = RoundedCornerShape(20.dp)) {
+        Surface(modifier = Modifier.padding(innerPadding)) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp))
             {
                 Box(modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .clip(shape = RoundedCornerShape(20.dp))
                     .background(MaterialTheme.colorScheme.primary)
                     .fillMaxWidth()
                     .weight(2f))
@@ -206,7 +260,7 @@ fun ProfileScreen(navController: NavController) {
                             modifier = Modifier
                                 .size(100.dp)
                                 .background(Color.White),
-                            contentDescription = null
+                            contentDescription = "Plant"
                         )
                         Text(
                             text = "Mehrunes Dagon"
@@ -214,6 +268,7 @@ fun ProfileScreen(navController: NavController) {
                     }
                 }
                 Box(modifier = Modifier
+                    .clip(shape = RoundedCornerShape(20.dp))
                     .background(MaterialTheme.colorScheme.primary)
                     .fillMaxWidth()
                     .weight(4f))
@@ -227,7 +282,7 @@ fun sendRequest(
     profileState: MutableState<ProfileModel>
 ) {
     val retrofit = Retrofit.Builder()
-        .baseUrl("http://192.168.68.116:3000")
+        .baseUrl("http://192.168.68.101:3000")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -251,10 +306,19 @@ fun sendRequest(
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun MainPreview() {
+fun HomePreview() {
     ApiExampleTheme {
         val navController = rememberNavController()
         HomeScreen(navController)
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun SearchPreview() {
+    ApiExampleTheme {
+        val navController = rememberNavController()
+        SearchScreen(navController)
     }
 }
 
