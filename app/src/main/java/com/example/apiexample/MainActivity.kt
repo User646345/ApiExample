@@ -6,28 +6,21 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
@@ -37,10 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -67,29 +56,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             ApiExampleTheme {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = HomeScreen) {
-                    composable<HomeScreen> {
-                        HomeScreen(navController)
-                    }
-                    composable<ProfileScreen> {
-                        ProfileScreen(navController)
-                    }
-                    composable<SearchScreen> {
-                        SearchScreen(navController)
-                    }
+                NavHost(navController, startDestination = Home) {
+                    composable<Home> { HomeScreen(navController)}
+                    composable<Settings> { SettingsScreen(navController)}
                 }
             }
         }
     }
 }
 
-//Каждый экран приложения для навигации
 @Serializable
-object HomeScreen
+object Home
 @Serializable
-object SearchScreen
-@Serializable
-object ProfileScreen
+object Settings
 
 //Это для API
 data class ProfileModel(
@@ -101,109 +80,93 @@ data class UserModel(
     var profile: ProfileModel
 )
 
-@Composable
-fun BottomNavigationBar(navController: NavController) {
-    NavigationBar(modifier = Modifier.clip(shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))) {
-        NavigationBarItem(
-            selected = true,
-            onClick = { navController.navigate(HomeScreen) },
-            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) },
-            label = {Text(text = "Home")})
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate(SearchScreen) },
-            icon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
-            label = {Text(text = "Search")})
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate(ProfileScreen) },
-            icon = { Icon(imageVector = Icons.Default.Person, contentDescription = null) },
-            label = {Text(text = "Profile")})
-    }
-}
-
 //@Composable
-//fun BottomNavigationBar(navController: NavController) {
-//    // Состояние для хранения индекса выбранного элемента
-//    val selectedIndex = remember { mutableIntStateOf(0) }
-//
+//fun BottomNavigationBar() {
 //    NavigationBar(modifier = Modifier.clip(shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))) {
 //        NavigationBarItem(
-//            selected = selectedIndex.intValue == 0,
-//            onClick = {
-//                navController.navigate(HomeScreen)
-//                selectedIndex.intValue = 0
-//                },
+//            selected = true,
+//            onClick = { navController.navigate(Home) },
 //            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) },
-//            label = { Text(text = "Home") }
-//        )
+//            label = {Text(text = "Home")})
 //        NavigationBarItem(
-//            selected = selectedIndex.intValue == 1,
-//            onClick = {
-//                navController.navigate(SearchScreen)
-//                selectedIndex.intValue = 1
-//            },
+//            selected = false,
+//            onClick = { navController.navigate(Search) },
 //            icon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
-//            label = { Text(text = "Search") }
-//        )
+//            label = {Text(text = "Search")})
 //        NavigationBarItem(
-//            selected = selectedIndex.intValue == 2,
-//            onClick = {
-//                navController.navigate(ProfileScreen)
-//                selectedIndex.intValue = 2
-//            },
+//            selected = false,
+//            onClick = { navController.navigate(Profile) },
 //            icon = { Icon(imageVector = Icons.Default.Person, contentDescription = null) },
-//            label = { Text(text = "Profile") }
-//        )
-//    }
+//            label = {Text(text = "Profile")})
 //}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopAppBar(navController: NavController) {
+    TopAppBar(
+        title = {
+            Text(
+                text = "Simple API Request",
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center)
+            )
+        },
+        navigationIcon = {
+            IconButton(
+                modifier = Modifier,
+                onClick = { /*TODO*/ },
+            ) {
+                Icon(imageVector = Icons.Default.Menu, contentDescription = "Settings")
+            }
+        },
+        actions = {
+            IconButton(
+                modifier = Modifier,
+                onClick ={ navController.navigate(Settings) },
+            ) {
+                Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
+            }
+        }
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(navController)
+            //BottomNavigationBar()
         },
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Simple API Request",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                    )
-                }
-            )
+            TopAppBar(navController)
         },
     ) { innerPadding ->
         Column(
             Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-
-            val id = remember {
-                mutableStateOf(TextFieldValue())
-            }
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            val id = remember { mutableStateOf(TextFieldValue()) }
             val profile = remember {
                 mutableStateOf(
-                    ProfileModel(
-                        age = "",
-                        name = "",
-                        email = ""
-                    )
+                    ProfileModel(age = "", name = "", email = "")
                 )
             }
             TextField(
-                shape = RoundedCornerShape(50.dp),
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(0.dp),
                 label = { Text(text = "User ID") },
                 value = id.value,
-                onValueChange = { id.value = it },
+                onValueChange = { id.value = it},
                 singleLine = true
             )
             Button(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(16.dp),
                 onClick = {
                     sendRequest(
                         id = id.value.text,
@@ -214,65 +177,53 @@ fun HomeScreen(navController: NavController) {
             ) {
                 Text(text = "Get Data", fontSize = 22.sp)
             }
-            Text(
-                text = profile.component1().toString(),
-                fontSize = 22.sp)
-        }
-    }
-}
-
-@Composable
-fun SearchScreen(navController: NavController) {
-    Scaffold(
-        bottomBar = { BottomNavigationBar(navController) }
-    ) { innerPadding ->
-        Surface(modifier = Modifier.padding(innerPadding)) {
-
-        }
-    }
-}
-
-@Composable
-fun ProfileScreen(navController: NavController) {
-    Scaffold(
-        bottomBar = { BottomNavigationBar(navController) }
-    ) { innerPadding ->
-        Surface(modifier = Modifier.padding(innerPadding)) {
             Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp), horizontalAlignment = Alignment.Start) {
+                Text(
+                    text = "Profile:",
+                    fontSize = 22.sp
+                )
+                Text(text = "Name: ${profile.value.name}")
+                Text(text = "Age: ${profile.value.age}")
+                Text(text = "Email: ${profile.value.email}")
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsScreen(navController: NavController) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate(Home) }) {
+                        Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Go Back")
+                    }
+                },
+                title = {
+                    Text(
+                        text = "Settings",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize(Alignment.Center)
+                    )
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding).padding(8.dp)) {
+            Text(
+                text = "Пока так",
+                textAlign = TextAlign.Center,
+                fontSize = 22.sp,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp))
-            {
-                Box(modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .clip(shape = RoundedCornerShape(20.dp))
-                    .background(MaterialTheme.colorScheme.primary)
-                    .fillMaxWidth()
-                    .weight(2f))
-                {
-                    Column(
-                        Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            painter = painterResource(id = R.drawable.plant),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(100.dp)
-                                .background(Color.White),
-                            contentDescription = "Plant"
-                        )
-                        Text(
-                            text = "Mehrunes Dagon"
-                        )
-                    }
-                }
-                Box(modifier = Modifier
-                    .clip(shape = RoundedCornerShape(20.dp))
-                    .background(MaterialTheme.colorScheme.primary)
-                    .fillMaxWidth()
-                    .weight(4f))
-            }
+                    .wrapContentSize(Alignment.Center))
         }
     }
 }
@@ -282,7 +233,7 @@ fun sendRequest(
     profileState: MutableState<ProfileModel>
 ) {
     val retrofit = Retrofit.Builder()
-        .baseUrl("http://192.168.68.101:3000")
+        .baseUrl("http://192.168.68.101:8000")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -297,7 +248,6 @@ fun sendRequest(
                 profileState.value = response.body()!!.profile
             }
         }
-
         override fun onFailure(call: Call<UserModel?>, t: Throwable) {
             Log.e("Main", "Не работает " + t.message.toString())
         }
@@ -315,18 +265,9 @@ fun HomePreview() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun SearchPreview() {
+fun SettingsPreview() {
     ApiExampleTheme {
         val navController = rememberNavController()
-        SearchScreen(navController)
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun ProfilePreview() {
-    ApiExampleTheme {
-        val navController = rememberNavController()
-        ProfileScreen(navController)
+        SettingsScreen(navController)
     }
 }
