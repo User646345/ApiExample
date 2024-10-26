@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,7 +48,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,6 +108,7 @@ fun TopAppBar(navController: NavController) {
             Text(
                 text = "Simple API Request",
                 textAlign = TextAlign.Center,
+                fontSize = 22.sp,
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center)
@@ -118,7 +119,7 @@ fun TopAppBar(navController: NavController) {
                 modifier = Modifier,
                 onClick = { /*TODO*/ },
             ) {
-                Icon(imageVector = Icons.Default.Menu, contentDescription = "Settings")
+                Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
             }
         },
         actions = {
@@ -132,7 +133,6 @@ fun TopAppBar(navController: NavController) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     Scaffold(
@@ -159,6 +159,7 @@ fun HomeScreen(navController: NavController) {
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
                     .fillMaxWidth(),
+                leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = "Search") },
                 shape = RoundedCornerShape(0.dp),
                 label = { Text(text = "User ID") },
                 value = id.value,
@@ -201,24 +202,25 @@ fun SettingsScreen(navController: NavController) {
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(Home) }) {
-                        Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Go Back")
-                    }
+                        Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Go Back") }
                 },
                 title = {
                     Text(
                         text = "Settings",
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Left,
+                        fontSize = 22.sp,
                         modifier = Modifier
-                            .fillMaxSize()
-                            .wrapContentSize(Alignment.Center)
+                            .padding(start = 4.dp)
                     )
                 }
             )
         }
     ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding).padding(8.dp)) {
+        Column(modifier = Modifier
+            .padding(innerPadding)
+            .padding(8.dp)) {
             Text(
-                text = "Пока так",
+                text = "App version: ${BuildConfig.VERSION_NAME}",
                 textAlign = TextAlign.Center,
                 fontSize = 22.sp,
                 modifier = Modifier
