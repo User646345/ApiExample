@@ -31,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -106,7 +107,7 @@ fun TopAppBar(navController: NavController) {
     TopAppBar(
         title = {
             Text(
-                text = "Simple API Request",
+                text = stringResource(id = R.string.app_name),
                 textAlign = TextAlign.Center,
                 fontSize = 22.sp,
                 modifier = Modifier
@@ -161,7 +162,7 @@ fun HomeScreen(navController: NavController) {
                     .fillMaxWidth(),
                 leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = "Search") },
                 shape = RoundedCornerShape(0.dp),
-                label = { Text(text = "User ID") },
+                label = { Text(text = stringResource(id = R.string.user_id)) },
                 value = id.value,
                 onValueChange = { id.value = it},
                 singleLine = true
@@ -176,19 +177,19 @@ fun HomeScreen(navController: NavController) {
                     Log.d("Main Activity", profile.toString())
                 }
             ) {
-                Text(text = "Get Data", fontSize = 22.sp)
+                Text(text = stringResource(id = R.string.button_get_data), fontSize = 22.sp)
             }
             Column(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp), horizontalAlignment = Alignment.Start) {
                 Text(
-                    text = "Profile:",
+                    text = "${stringResource(id = R.string.profile)}:",
                     fontSize = 22.sp
                 )
-                Text(text = "Name: ${profile.value.name}")
-                Text(text = "Age: ${profile.value.age}")
-                Text(text = "Email: ${profile.value.email}")
+                Text(text = "${stringResource(R.string.name)}: ${profile.value.name}")
+                Text(text = "${stringResource(R.string.age)}: ${profile.value.age}")
+                Text(text = "${stringResource(R.string.email)}: ${profile.value.email}")
             }
         }
     }
@@ -206,7 +207,7 @@ fun SettingsScreen(navController: NavController) {
                 },
                 title = {
                     Text(
-                        text = "Settings",
+                        text = stringResource(id = R.string.settings),
                         textAlign = TextAlign.Left,
                         fontSize = 22.sp,
                         modifier = Modifier
@@ -220,7 +221,7 @@ fun SettingsScreen(navController: NavController) {
             .padding(innerPadding)
             .padding(8.dp)) {
             Text(
-                text = "App version: ${BuildConfig.VERSION_NAME}",
+                text = "${stringResource(R.string.app_version)}: ${BuildConfig.VERSION_NAME}",
                 textAlign = TextAlign.Center,
                 fontSize = 22.sp,
                 modifier = Modifier
@@ -261,15 +262,11 @@ fun sendRequest(
 fun HomePreview() {
     ApiExampleTheme {
         val navController = rememberNavController()
-        HomeScreen(navController)
-    }
-}
+        HomeScreen(navController) } }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun SettingsPreview() {
     ApiExampleTheme {
         val navController = rememberNavController()
-        SettingsScreen(navController)
-    }
-}
+        SettingsScreen(navController) } }

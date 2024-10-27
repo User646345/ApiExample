@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="top_app_bar_text">Простой API запрос</string>
+    <string name="user_id">ID пользователя</string>
+    <string name="button_get_data">Получить данные</string>
+    <string name="profile">Профиль</string>
+    <string name="name">Имя</string>
+    <string name="age">Возраст</string>
+    <string name="settings">Настройки</string>
+    <string name="app_version">Версия приложения</string>
+    <string name="app_name">ApiExample</string>
+    <string name="email">Почта</string>
+</resources>
