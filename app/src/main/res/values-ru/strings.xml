@@ -2,7 +2,8 @@
 <resources>
     <string name="top_app_bar_text">Простой API запрос</string>
     <string name="user_id">ID пользователя</string>
-    <string name="button_get_data">Получить данные</string>
+    <string name="button_post">Отправить данные</string>
+    <string name="button_get">Получить</string>
     <string name="profile">Профиль</string>
     <string name="name">Имя</string>
     <string name="age">Возраст</string>
@@ -10,4 +11,9 @@
     <string name="app_version">Версия приложения</string>
     <string name="app_name">ApiExample</string>
     <string name="email">Почта</string>
+    <string name="post">Экран отправки</string>
+    <string name="get">Экран получения</string>
+    <string name="app_name_variant">Золотой проект</string>
+    <string name="password">Пароль</string>
+    <string name="button_delete">Удалить</string>
 </resources>

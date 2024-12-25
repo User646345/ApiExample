@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.apiexample"
-    compileSdk = 34
+    compileSdk = 35
 
     buildFeatures {
         buildConfig = true
@@ -15,9 +15,9 @@ android {
     defaultConfig {
         applicationId = "com.example.apiexample"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
